@@ -1,0 +1,26 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch .NET Core WorkerService",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "Load Env Vars and Build", // Reference the task from tasks.json
+            "program": "${workspaceFolder}/WorkerService/bin/Debug/net6.0/WorkerService.dll", // Adjust to your framework
+            "args": [],
+            "cwd": "${workspaceFolder}/WorkerService",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                // Optionally override or set environment variables here
+                "KAFKA_P12_PASSWORD": "${env:KAFKA_P12_PASSWORD}"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/WorkerService/Views"
+            }
+        }
+    ]
+}

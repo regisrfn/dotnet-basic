@@ -1,0 +1,20 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Load Env Vars and Build",
+            "type": "shell",
+            "command": "dotnet build",
+            "options": {
+                "env": {
+                    "KAFKA_P12_PASSWORD": "your-password-here",
+                    "ANOTHER_ENV_VAR": "another-value"
+                },
+                "cwd": "${workspaceFolder}/WorkerService"
+            },
+            "problemMatcher": "$msCompile",
+            "group": "build",
+            "detail": "Loads env variables and builds the .NET project"
+        }
+    ]
+}
