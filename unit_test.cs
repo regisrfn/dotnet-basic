@@ -22,9 +22,21 @@ namespace Itau.QA.DominioCorporativo.Tests.Repositories
         public void Setup()
         {
             _cacheMock = new Mock<IElasticCacheService>();
-            _contextMock = new Mock<MdmDominiosContext>(new DbContextOptions<MdmDominiosContext>());
+
+            // Mock DbContextOptions and DbSets
+            var options = new DbContextOptionsBuilder<MdmDominiosContext>()
+                              .UseInMemoryDatabase(databaseName: "TestDatabase")
+                              .Options;
+            _contextMock = new Mock<MdmDominiosContext>(options);
+
+            // Mock the DbSet for Dominio
+            var dominioDbSetMock = new Mock<DbSet<Dominio>>();
+            _contextMock.Setup(c => c.Set<Dominio>()).Returns(dominioDbSetMock.Object);
+
+            // Initialize the repository
             _dominioRepository = new DominioRepository(_contextMock.Object, _cacheMock.Object);
         }
+
 
         [TestMethod]
         public async Task ObterDominio_ReturnsFromCache_WhenCacheExists()
