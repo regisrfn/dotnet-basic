@@ -23,19 +23,25 @@ namespace Itau.QA.DominioCorporativo.Tests.Repositories
         {
             _cacheMock = new Mock<IElasticCacheService>();
 
-            // Mock DbContextOptions and DbSets
+            // Create in-memory options for DbContext
             var options = new DbContextOptionsBuilder<MdmDominiosContext>()
                               .UseInMemoryDatabase(databaseName: "TestDatabase")
                               .Options;
-            _contextMock = new Mock<MdmDominiosContext>(options);
 
-            // Mock the DbSet for Dominio
-            var dominioDbSetMock = new Mock<DbSet<Dominio>>();
-            _contextMock.Setup(c => c.Set<Dominio>()).Returns(dominioDbSetMock.Object);
+            // Create a real in-memory DbContext instead of mocking it
+            var realContext = new MdmDominiosContext(options);
+
+            // Insert some sample data in the in-memory database
+            realContext.Dominios.AddRange(TestDataUtils.CreateDominio(1), TestDataUtils.CreateDominio(2));
+            realContext.SaveChanges();
+
+            // Use the real DbContext (with data) for the test
+            _contextMock = new Mock<MdmDominiosContext>(realContext);
 
             // Initialize the repository
-            _dominioRepository = new DominioRepository(_contextMock.Object, _cacheMock.Object);
+            _dominioRepository = new DominioRepository(realContext, _cacheMock.Object);
         }
+
 
 
         [TestMethod]
